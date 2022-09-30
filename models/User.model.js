@@ -1,30 +1,32 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-/* CAMPOS 
-- name: String, required
-- email: String, required, unique e com verificação de email
-- favorites: [ObjectsId]
-- dislikes: [ObjectsId]
-*/
-
-const clientSchema = new Schema(
+const UserSchema = new Schema(
   {
-    // TODO: write the schema
-    name: { type: String, required: true },
+    username: { type: String, required: true },
     email: {
       type: String,
       required: true,
       unique: true,
-      match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+      match: /^[\w\.]+@([\w-]+\.)+[\w-]{2,4}$/,
     },
-    favorites: [{ type: Schema.Types.ObjectId, ref: "Recipe" }],
-    dislikes: [{ type: Schema.Types.ObjectId, ref: "Recipe" }],
-    role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
+    posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }], // ME SEGUEM
+    following: [{ type: Schema.Types.ObjectId, ref: "User" }], // EU SIGO
+    passwordHash: { type: String, required: true },
+    role: { type: String, enum: ["USER", "ADMIN"], default: "USER" },
+    emailConfirm: { type: Boolean, default: false },
+    profilePic: {
+      type: String,
+      default:
+        "https://toppng.com/uploads/preview/instagram-default-profile-picture-11562973083brycehrmyv.png",
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-const ClientModel = mongoose.model("Client", clientSchema);
+const UserModel = mongoose.model("User", UserSchema);
 
-module.exports = ClientModel;
+module.exports = UserModel;
